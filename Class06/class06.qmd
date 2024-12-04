@@ -1,0 +1,57 @@
+---
+title: "Class06"
+author: "Josie A11433761"
+format: pdf
+---
+My first function
+```{r}
+add<-function(x,y=1){
+  x+y
+}
+```
+
+```{r}
+add(1,1)
+add(x=1, y=100)
+add(c(100, 1, 100),1)
+add(10)
+add(10,10)
+```
+```{r}
+generate_DNA<-function(length){
+bases<-c("A","C","T","G")
+sequence<-sample(bases, size=length, 
+                 replace=TRUE)
+  return(sequence)
+}
+
+generate_DNA(10)  
+
+
+```
+```{r}
+unique(bio3d::aa.table$aa1)[1:20]
+
+```
+```{r}
+generate_protein<-function(length){
+bases<-c(unique(bio3d::aa.table$aa1)[1:20])
+sequence<-sample(bases, size=length, 
+                 replace=TRUE)
+ sequence<-paste(sequence, collapse="")
+ return(sequence)
+}
+
+generate_protein(10)  
+#sequence was override by paste, collapse="" eliminated quotations between AAs
+```
+Generate sequences of length 6 to 12
+```{r}
+answer<-sapply(6:12, generate_protein)
+answer
+```
+```{r}
+cat(paste(">id.",6:12,"\n",answer,sep=""),sep="\n")
+
+```
+

@@ -1,0 +1,78 @@
+---
+title: "Class 5: Data Viz with ggplot"
+author: "Josie (A11433761)"
+format: pdf
+---
+
+**base R** `plot()`
+```{r}
+plot(cars)
+```
+**ggplot2**
+Before I can use any add-on package like this, I must install it.
+`install.packages("ggplot2")` command/function
+Then to use the package, I need to load it with a `library(ggplot2)` call
+
+```{r}
+library(ggplot2)
+ggplot(cars) +
+  aes(x=speed, y=dist) + 
+  geom_point()
+```
+For "simple" plots, base R will be much shorter than ggplot code.
+
+Let's fit a model and show it on my plot.
+
+```{r}
+
+ggplot(cars) +
+  aes(x=speed, y=dist) + 
+  geom_point() + 
+  geom_smooth()
+```
+**data:** data.frame with the numbers you want to plot
+**aes:** -thetics mapping of your data columns to your plot
+**geom:** `geom_point()`, `geom_line()`. `geom_col()`
+
+```{r}
+mtcars
+ggplot(mtcars) +
+  aes(x=mpg, y=disp, size=hp)+
+  geom_point( color="blue") 
+  
+```
+
+```{r}
+ggplot(cars) +
+  aes(x=speed, y=dist) + 
+  geom_point() + 
+  geom_smooth(method="lm", se=FALSE)
+  
+```
+
+```{r}
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+```
+
+
+```{r}
+nrow(genes)
+ncol(genes)
+table(genes$State)
+table(genes$State)/nrow(genes)
+
+
+```
+```{r}
+p<-ggplot(genes)+
+  aes(x=Condition1,y=Condition2, col=State)+
+  geom_point()
+p + scale_colour_manual(values=c("blue","gray","red"))+
+  labs(title="Gene Expression Changes Upon Drug Treatment", x="Control (no drug)", y="Drug Treatment")
+```
+
+
+
+
