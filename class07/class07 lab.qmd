@@ -1,0 +1,133 @@
+---
+title: "Class 07"
+author: "Josie (A11433761)"
+format: pdf
+---
+Before we get into clustering methods let's make some sample data to cluster where we know what the answer should be.
+
+To help with this I will use the `rnorm()` function.
+```{r}
+hist(rnorm(150000,mean=-3))
+
+```
+```{r}
+n=10000
+hist(c(rnorm(n,mean=3),rnorm (n,mean=-3)))
+
+```
+```{r}
+n=30
+x<-c(rnorm(n,mean=3),rnorm (n,mean=-3))
+y<-rev(x)
+z<-cbind(x,y)
+z
+```
+```{r}
+plot(z)
+```
+## K-means clustering
+
+The function in base R for k-means clustering is called `kmeans()`.
+```{r}
+km<-kmeans(z,center=2)
+km
+```
+```{r}
+km$centers
+```
+```{r}
+km$cluster
+```
+
+```{r}
+plot(z,col=c("red","blue"))
+```
+```{r}
+plot(z, col=c(1,2))
+```
+```{r}
+plot(z, col=km$cluster) #plot with clustering results and cluster centers
+points(km$centers, col="blue",pch=15,cex=2) #color the center and make it a square center (pch=15)
+```
+Can you cluster our data in `z` into four clusters?
+```{r}
+km4<-kmeans(z,center=4)
+plot(z,col=km4$cluster)
+points(km4$centers, col="blue",pch=15,cex=2)
+```
+## Hierarchical Clustering
+
+The main function for hierarchical clustering is base R is called `hclust()`.
+Unlike `kmeans()` I cannot just pass in my data as input.
+I first need a distance matrix from my data.
+
+```{r}
+d<-dist(z)
+hc<-hclust(d)
+hc
+```
+hclust plot method
+
+```{r}
+plot(hc)
+abline(h=10, col="red")
+```
+To get my clustering results, I can "cut" my tree at a given height.
+To do this, I will use the `cutree`.
+```{r}
+grps<-cutree(hc, h=10)
+```
+```{r}
+plot(z,hc$grps)
+```
+## Principle Component Analysis
+
+## PCA of UK food data
+```{r}
+url<-"http://tinyurl.com/UK-foods"
+x<-read.csv(url,row.names=1)
+head(x)
+```
+```{r}
+barplot(as.matrix(x), beside=T, col=rainbow(nrow(x)))
+```
+
+```{r}
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+```
+```{r}
+pairs(x, col=rainbow(10), pch=16)
+```
+
+## PCA to the rescue
+The main function to do PCA in base R is called `prcomp()`
+
+```{r}
+
+pca<-prcomp(t(x))
+summary(pca)
+```
+Let's see what's inside our result object `pca`
+
+```{r}
+attributes(pca)
+```
+```{r}
+pca$x
+```
+To make our main result figure, called a PC plot (or score plot, ordination plot, PC1 vs.PC2):
+
+```{r}
+plot(pca$x[,1],pca$x[,2], col=c("black", "red","blue", "darkgreen"), pch=16, xlab="PC1 (67.4%)", ylab="PC2 (29%)")
+```
+## Variable Loadings  Plot: Lets focus on PC1 as it accounts for > 90% of variance 
+```{r}
+
+par(mar=c(10, 3, 0.35, 0))
+barplot( pca$rotation[,1], las=2 )
+```
+```{r}
+pca$rotation
+```
+
+
