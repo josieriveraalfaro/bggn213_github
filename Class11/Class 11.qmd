@@ -1,0 +1,63 @@
+---
+title: "Class 11 AlphaFold Part 2"
+author: "Josie (A11433761)"
+format: pdf
+---
+
+```{r}
+library(bio3d)
+id<-"1ake_A"
+aa<-get.seq(id)
+aa
+```
+```{r}
+b<-blast.pdb(aa)
+```
+```{r}
+hits<-plot(b)
+hits
+```
+
+```{r}
+attributes(hits)
+```
+Tops hits from our BLAST results
+```{r}
+hits$pdb.id
+```
+
+```{r}
+files <- get.pdb(hits$pdb.id, path="pdbs", split=TRUE, gzip=TRUE)
+```
+I have now downloaded all adk structures in the PDB database but viewing is a mess. We need to align and superpossed.
+Install BiocManager package from CRAN in the R console. Then I can use `BiocManager :: install()` to install any bioconductor package.
+
+```{r}
+pdbs <- pdbaln(files, fit = TRUE, exefile="msa")
+```
+
+
+```{r}
+pdbs
+```
+
+
+```{r}
+## Principal Component Analysis
+pc<-pca(pdbs)
+plot(pc)
+```
+```{r}
+plot(pc,pc.axes=c(1:2))
+```
+To examine in more detail what PC1 (or any PC) is capturing here we can plot the loadings or make a movie (trajectory) or moving along the PC
+
+```{r}
+mktrj(pc,pc=1, file="pc1.pdb")
+```
+
+## Generating your own structure predictions
+
+
+
+
