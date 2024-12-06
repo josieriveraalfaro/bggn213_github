@@ -4,7 +4,7 @@ My classwork from [BGGN 213](https://bioboot.github.io/bggn213_F24/) at UC San D
 
 - Class 4: [Intro to R data structures]()
 - Class 5: [All about GGPLOT](https://github.com/josieriveraalfaro/bggn213_github/blob/main/BGGN213%20Class%2005/class05.md)
-- Class 6: [R functions]()
+- Class 6: [R functions](https://github.com/josieriveraalfaro/bggn213_github/blob/main/Class06/class06.md)
 - Class 7: [Introduction to machine learning for Bioinformatics]()
 - Class 8: [Mini-Project Cancer]()
 - Class 9: [Mini-Project Candy]()
