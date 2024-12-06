@@ -1,0 +1,82 @@
+---
+title: "Class 10: Structural Bioinfo. Part 1"
+author: "Josie (A11433761)"
+format: pdf
+---
+
+## PDB statistics
+
+```{r}
+PDB_data<-"Data Export Summary.csv"
+PDBstats<-read.csv(PDB_data, row.names=1)
+head(PDBstats)
+```
+
+```{r}
+library(readr)
+pdbstats<-read_csv("Data Export Summary.csv")
+pdbstats
+```
+```{r}
+15698/195866
+167317/195866
+sum(pdbstats$Total)
+195866/(sum(pdbstats$Total))
+```
+
+
+Q1:EM (8.01%) X-ray (85.4%)
+Q2: Protein only (86.4%)
+Q3:HIV structures (5)
+
+## 2. Visualizing the HIV-1 protease structure
+
+![1HSG image from Mol-star](1HSG.png)
+
+
+
+![Aspartic Acid Residues interacting with MK1](1HSG2.png)
+
+
+
+
+## Introduction to Bio3D in R
+
+```{r}
+library(bio3d)
+pdb<- read.pdb("1hsg")
+pdb
+```
+
+```{r}
+attributes(pdb)
+head(pdb$atom)
+```
+```{r}
+pdbseq(pdb)[25]
+```
+Q. How many amino acids are there? Sequence Length
+
+```{r}
+length(pdbseq(pdb))
+```
+## Predicting functional motions of a single structure
+
+```{r}
+adk <- read.pdb("6s36")
+adk
+```
+```{r}
+#source("https://tinyurl.com/viewpdb")
+#library(r3dmol)
+#library(shiny)
+#view.pdb(adk)
+```
+```{r}
+modes<-nma(adk)
+plot(modes)
+```
+```{r}
+mktrj(modes,file="adk.pdb")
+```
+![adk protein prediction](ADK.PDB.png)
