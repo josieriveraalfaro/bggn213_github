@@ -1,0 +1,213 @@
+---
+title: "Class 13: RNAseq with DESeq2"
+author: "Josie (A11433761)"
+format: pdf
+---
+
+## Data import
+
+```{r}
+counts<-read.csv("airway_scaledcounts.csv", row.names=1)
+metadata<-read.csv("airway_metadata.csv")
+head(counts)
+```
+```{r}
+head(metadata)
+```
+
+Q1: How many transcripts/genes are in the `counts` object?
+There are `r nrow(counts)` in this dataset
+
+```{r}
+nrow(counts)
+```
+
+Q2: How many control samples are there?
+```{r}
+sum(metadata$dex=="control")
+```
+OR...
+
+```{r}
+table(metadata$dex)
+```
+
+Compare control vs treated
+1. Split the "counts" into `control.counts` and `treated.counts`
+```{r}
+control.inds<-metadata$dex=="control"
+```
+
+Syntax with df[ROWs,COLs]
+```{r}
+control.counts<-counts[,control.inds]
+
+```
+
+
+```{r}
+treated.counts<-counts[,metadata$dex=="treated"]
+```
+
+2. Calculate mean counts per gene for `control` and `treated`. Then compare.
+
+Let's call `control.mean` and `treated.mean`
+
+```{r}
+#I can use `apply` function to apply `mean()` over the rows and columns of any data.frame
+
+control.mean<-apply(control.counts, 1,mean)
+treated.mean<-apply(treated.counts, 1, mean)
+```
+
+
+```{r}
+meancounts <- data.frame(control.mean, treated.mean)
+plot(meancounts, log="xy")
+```
+
+We use log2 transforms here because it make the math easier. Log2(1)=0, so if treated/control =1, the log2 says there is no change.
+```{r}
+log2(10/10)
+log2(20/10)
+log2(5/10)
+log2(40/10)
+log2(2.5/10)
+```
+Let's calculate log2 fold change and add it to our table
+
+```{r}
+meancounts$log2fc<-log2(meancounts$treated.mean/meancounts$control.mean)
+head(meancounts)
+```
+Filter out all genes with zero counts in either control or treated
+```{r}
+to.rm<-rowSums(meancounts[,1:2]==0)>0
+mycounts<-meancounts[!to.rm,]#"!" inverts
+```
+
+
+```{r}
+nrow(mycounts)
+```
+Q: How many "down" regulated genes do we have at the log2 fold change value of -2
+```{r}
+sum(mycounts$log2fc < -2)
+```
+
+Q: How many "up" regulated at log2FC> +2
+```{r}
+sum(mycounts$log2fc > 2)
+```
+
+Do we trust these results? We are missing the stats
+
+## DESeq analysis
+```{r}
+#| message: false 
+library(DESeq2)
+```
+
+DESeq, like many BiocManager packages, wants our input data in a very specific format
+
+```{r}
+dds<-DESeqDataSetFromMatrix(countData=counts, colData=metadata, design= ~dex)
+```
+The main function in DESeq2 is called `DESeq()`
+
+```{r}
+dds<- DESeq(dds)
+res<-results(dds)
+```
+
+```{r}
+head(res)
+```
+A common figure that plots logFC vs P-value
+
+```{r}
+plot(res$log2FoldChange, -log(res$padj))
+abline(v=c(-2,2), col="grey")
+abline(h=-log(0.005),col="grey")
+```
+
+```{r}
+mycols<-rep("grey", nrow(res))
+mycols[res$log2FoldChange> 2]<-"red"
+
+mycols[res$log2FoldChange< -2]<-"red"
+
+mycols[res$padj>0.005]<-"grey"
+
+plot(res$log2FoldChange, -log(res$padj), col=mycols)
+abline(v=c(-2,2), col="grey")
+abline(h=-log(0.005),col="grey")
+```
+
+```{r}
+write.csv(res, file="myresults.csv")
+```
+
+## Gene annotation
+```{r}
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+```
+```{r}
+columns(org.Hs.eg.db)
+```
+
+```{r}
+res$symbol <- mapIds(org.Hs.eg.db,
+                     keys=row.names(res), # Our gene names
+                     keytype="ENSEMBL",        # The format of our gene names
+                     column="SYMBOL",          # The new format we want to add
+                     multiVals="first")
+```
+
+
+```{r}
+head(res)
+```
+## Pathway analysis
+
+
+```{r}
+library(pathview)
+library(gage)
+library(gageData)
+
+data(kegg.sets.hs)
+```
+```{r}
+res$entrez <- mapIds(org.Hs.eg.db,
+                     keys=row.names(res), # Our gene names
+                     keytype="ENSEMBL",        # The format of our gene names
+                     column="ENTREZID",          # The new format we want to add
+                     multiVals="first")
+```
+```{r}
+foldchanges<-res$log2FoldChange
+names(foldchanges)<-res$entrez
+head(foldchanges)
+```
+
+
+```{r}
+keggres = gage(foldchanges, gsets=kegg.sets.hs)
+attributes(keggres)
+```
+
+```{r}
+head(keggres$less, 3)
+pathview(gene.data=foldchanges, pathway.id="hsa05310")
+```
+![A pathway figure](hsa05310.pathview.png)
+
+
+```{r}
+write.csv(res, file="myresults.csv")
+```
+
+
+
