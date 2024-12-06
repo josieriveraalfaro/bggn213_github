@@ -1,7 +1,7 @@
 ---
 title: "Class06"
 author: "Josie A11433761"
-format: pdf
+format: gfm
 ---
 My first function
 ```{r}
