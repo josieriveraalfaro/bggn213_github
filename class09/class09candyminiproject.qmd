@@ -1,0 +1,194 @@
+---
+title: "Class 09: Halloween Mini-Project"
+author: "Josie (A11433761)"
+format: pdf
+---
+## 1: Import data
+```{r}
+candy_file<-"candy-data.csv"
+candy<-read.csv(candy_file, row.names = 1)
+head(candy)
+
+```
+```{r}
+nrow(candy)
+```
+
+```{r}
+sum(candy$fruity)
+```
+
+```{r}
+dim(candy)
+```
+
+## 2: Favorite Candy
+
+```{r}
+candy["Dum Dums",]$winpercent
+```
+```{r}
+library(dplyr)
+candy|>
+filter( rownames(candy)=="Dum Dums")|>
+  select(winpercent)
+
+```
+```{r}
+candy|>
+filter( rownames(candy)=="Kit Kat")|>
+  select(winpercent)
+```
+```{r}
+candy|>
+  filter(rownames(candy)%in% c("Kit Kat", "Tootsie Roll Snack Bars"))|>
+  select(winpercent)
+```
+`%in%` operator useful for checking the intersection
+
+
+Install "skimr" in console
+```{r}
+library("skimr")
+skim(candy)
+```
+Q6:winpercent column is on a very different scale than the rest of the data. It will need to be scaled.
+
+```{r}
+hist(candy$winpercent)
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(candy)+ aes(winpercent)+
+  geom_histogram(bins=10)+
+  theme_bw()
+```
+```{r}
+summary(candy$winpercent)
+```
+Q11: Chocolate ranks higher than fruity candy
+```{r}
+inds<-candy$chocolate==1
+candy[inds,]$winpercent
+```
+```{r}
+chocolate.win<-candy|>
+  filter(chocolate==1)|>
+  select(winpercent)
+```
+```{r}
+fruit.win<-candy|>
+  filter(fruity==1)|>
+  select(winpercent)
+```
+```{r}
+t.test(fruit.win,chocolate.win)
+```
+
+## 3: Candy Rankings
+
+Lowest ranking candies: Nik L Nip,Boston Baked Beans,Chiclets,Super Bubble,Jawbusters
+Highest ranking candies: Reese's Peanut Butter cup,Reese's Miniatures,Twix,Kit Kat,Snickers
+
+
+```{r}
+head(candy[order(candy$winpercent),], n=5)
+sort(candy$winpercent)
+inds<-order(candy$winpercent)
+head(candy[inds,])
+```
+```{r}
+inds<-order(candy$winpercent,decreasing=T)
+head(candy[inds,],5)
+```
+
+
+```{r}
+ggplot(candy)+
+  aes(x=winpercent, y=reorder(rownames(candy),winpercent))+
+  geom_col()
+```
+```{r}
+my_cols=rep("black", nrow(candy))
+my_cols[as.logical(candy$chocolate)] = "chocolate"
+my_cols[as.logical(candy$bar)] = "brown"
+my_cols[as.logical(candy$fruity)] = "pink"
+ggplot(candy)+
+  aes(x=winpercent, y=reorder(rownames(candy),winpercent))+
+  geom_col(fill=my_cols)
+
+```
+Worst chocolate ranked: Sixlets
+Best fruity candy ranked: Starbursts
+
+
+```{r}
+#Finding Sour Patch Kids and coloring the bar
+
+my_cols=rep("black", nrow(candy))
+my_cols[as.logical(candy$chocolate)] = "chocolate"
+my_cols[as.logical(candy$bar)] = "brown"
+my_cols[as.logical(candy$fruity)] = "pink"
+my_cols[rownames(candy)=="Sour Patch Kids"] = "blue"
+ggplot(candy)+
+  aes(x=winpercent, y=reorder(rownames(candy),winpercent))+
+  geom_col(fill=my_cols)
+ 
+```
+```{r}
+ord <- order(candy$pricepercent, decreasing = TRUE)
+head( candy[ord,c(11,12)], n=5 )
+```
+
+
+## 4:Taking a look at pricepercent
+
+```{r}
+library(ggrepel)
+
+ggplot(candy) +
+  aes(winpercent, pricepercent, label=rownames(candy)) +
+  geom_point(col=my_cols) + 
+  geom_text_repel(col=my_cols, size=3.3, max.overlaps = 8)
+```
+## 5: Exploring the correlation structure
+
+```{r}
+library(corrplot)
+cij <- cor(candy)
+corrplot(cij)
+```
+## 6: Principal Component Analysis
+
+```{r}
+pca <- prcomp(candy,scale=TRUE )
+summary(pca)
+```
+```{r}
+plot(pca$x[,2],col=my_cols,pch=16)
+```
+ggplot version
+```{r}
+my_data <- cbind(candy, pca$x[,1:3])
+p<-ggplot(my_data)+
+  aes(x=PC1, y=PC2,
+        size=winpercent/100,  
+            text=rownames(my_data),
+            label=rownames(my_data)) +
+        geom_point(col=my_cols)
+p
+```
+```{r}
+p + geom_text_repel(size=3.3, col=my_cols, max.overlaps = 20)  + 
+  theme(legend.position = "none") +
+  labs(title="Halloween Candy PCA Space",
+       subtitle="Colored by type: chocolate bar (dark brown), chocolate other (light brown), fruity (red), other (black)",
+       caption="Data from 538")
+```
+```{r}
+par(mar=c(8,4,2,2))
+barplot(pca$rotation[,1], las=2, ylab="PC1 Contribution")
+```
+Q24: Fruity,hard and pluribus make sense to be correlated with each other because that is how that type of candy is usually seen. The PC1 reflects that. 
