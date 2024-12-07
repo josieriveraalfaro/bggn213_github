@@ -1,0 +1,42 @@
+---
+title: "Find-a-gene heatmap"
+format: gfm
+---
+
+```{r}
+library(bio3d)
+inputfile<-"muscle_fasta2"
+aln<-read.fasta(inputfile)
+
+```
+
+```{r}
+sim<-conserv(aln)
+plot(sim, typ="h",xlab="Alignment positions", ylab="Conservation score")
+```
+```{r}
+inds<-order(sim,decreasing=TRUE)
+head(sim[inds])
+```
+
+```{r}
+positions<-data.frame(pos=1:length(sim),
+                        aa=aln$ali[1,],
+                        score=sim)
+
+head(positions)
+```
+```{r}
+head( positions[inds,] )
+```
+```{r}
+aa123(positions[inds,]$aa)[1:3]
+```
+
+```{r}
+library(pheatmap)
+
+ide <- seqidentity(aln)
+pheatmap((1-ide))
+```
+
