@@ -13,4 +13,5 @@ My classwork from [BGGN 213](https://bioboot.github.io/bggn213_F24/) at UC San D
 - Class 12: [Population Analysis](https://github.com/josieriveraalfaro/bggn213_github/blob/main/Class12/Class12hw.md)
 - Class 13: [RNAseq with DESeq2](https://github.com/josieriveraalfaro/bggn213_github/blob/main/Class13/class13.md)
 - Class 14: [Mini-Project RNAseq](https://github.com/josieriveraalfaro/bggn213_github/blob/main/Class14/class14.md)
-- Class 15: [Mini-Project Pertussis]()
+- Class 15: [Mini-Project Pertussis](https://github.com/josieriveraalfaro/bggn213_github/blob/main/class15/Class%2015%20mini%20project.md)
+- Find-a-gene Project: [Bacteroides BIS sheath Heatmap](https://github.com/josieriveraalfaro/bggn213_github/blob/main/find_a_gene/heatmap.md)
