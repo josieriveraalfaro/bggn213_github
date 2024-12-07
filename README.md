@@ -11,6 +11,6 @@ My classwork from [BGGN 213](https://bioboot.github.io/bggn213_F24/) at UC San D
 - Class 10: [Structural Bioinformatics](https://github.com/josieriveraalfaro/bggn213_github/blob/main/class10/Class10.md)
 - Class 11: [Alphafold](https://github.com/josieriveraalfaro/bggn213_github/blob/main/Class11/Class%2011.md)
 - Class 12: [Population Analysis](https://github.com/josieriveraalfaro/bggn213_github/blob/main/Class12/Class12hw.md)
-- Class 13: [RNAseq with DESeq2]()
+- Class 13: [RNAseq with DESeq2](https://github.com/josieriveraalfaro/bggn213_github/blob/main/Class13/class13.md)
 - Class 14: [Mini-Project RNAseq]()
 - Class 15: [Mini-Project Pertussis]()
