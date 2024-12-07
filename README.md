@@ -8,7 +8,7 @@ My classwork from [BGGN 213](https://bioboot.github.io/bggn213_F24/) at UC San D
 - Class 7: [Introduction to machine learning for Bioinformatics](https://github.com/josieriveraalfaro/bggn213_github/blob/main/class07/class07%20lab.md)
 - Class 8: [Mini-Project Cancer](https://github.com/josieriveraalfaro/bggn213_github/blob/main/class08_miniproject/class8%20mini%20project.md)
 - Class 9: [Mini-Project Candy](https://github.com/josieriveraalfaro/bggn213_github/blob/main/class09/class09candyminiproject.md)
-- Class 10: [Structural Bioinformatics]()
+- Class 10: [Structural Bioinformatics](https://github.com/josieriveraalfaro/bggn213_github/blob/main/class10/Class10.md)
 - Class 11: [Alphafold]()
 - Class 12: [Population Analysis]()
 - Class 13: [RNAseq with DESeq2]()
