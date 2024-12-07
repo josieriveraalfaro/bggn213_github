@@ -1,7 +1,7 @@
 ---
 title: "Class 09: Halloween Mini-Project"
 author: "Josie (A11433761)"
-format: pdf
+format: gfm
 ---
 ## 1: Import data
 ```{r}
